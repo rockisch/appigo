@@ -1,4 +1,4 @@
-package appigo
+package driver
 
 import (
 	"encoding/json"

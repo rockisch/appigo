@@ -1,10 +1,10 @@
-package appigo
+package driver
 
 import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/rockisch/appigo/lib/client"
+	"github.com/rockisch/appigo/client"
 )
 
 // Driver object containing some data related to your session
