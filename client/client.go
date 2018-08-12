@@ -30,8 +30,8 @@ func CreateClient(url string) *Client {
 // MakeRequest does a request using the data contained in the Client caller and the
 // specified parameters. Returns an error/panics if anything wrong happens with the request or
 // with the reading of the response.
-func (c *Client) MakeRequest(method string, reqBody []byte, path string) (Response, error) {
-	req, err := http.NewRequest(method, c.ClientURL+path, bytes.NewReader(reqBody))
+func (c *Client) MakeRequest(method string, reqBody *[]byte, path string) (Response, error) {
+	req, err := http.NewRequest(method, c.ClientURL+path, bytes.NewReader(*reqBody))
 	if err != nil {
 		panic(err)
 	}

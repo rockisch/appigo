@@ -1,17 +1,22 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/rockisch/appigo/driver"
+	"github.com/rockisch/appigo/mobileby"
 )
 
 func main() {
-	caps := map[string]string{}
-	caps["one"] = "ONE"
-	caps["two"] = "TWO"
+	caps := map[string]string{
+		"deviceName":      "iPhone 6",
+		"platformName":    "iOS",
+		"platformVersion": "11.4",
+		"app":             "/Users/joaohaas/Documents/apps/TestApp.app",
+	}
 
-	fmt.Println("vim-go")
-	driver := driver.CreateDriver("https://0.0.0.0", caps)
-	fmt.Print(driver)
+	driver := driver.CreateDriver("http://192.168.0.55:4723", caps)
+
+	driver.Init()
+	defer driver.Close()
+
+	println(driver.FindElement("show alert", mobileby.ByName).ID)
 }
