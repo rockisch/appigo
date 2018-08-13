@@ -56,3 +56,21 @@ func (el *Element) Click() {
 		panic("ERROR IN ELEMENT CLICK")
 	}
 }
+
+func (el *Element) SendKeys(keys string) {
+	reqBody := map[string]string{
+		"value": keys,
+	}
+
+	appiumReq := &appiumRequest{
+		"POST",
+		reqBody,
+		"/wd/hub/session" + el.Driver.sessionID + "/element/" + el.ID + "/sendkeys",
+	}
+
+	res := doAppiumRequest(appiumReq, el.Driver.driverClient, "")
+
+	if res.StatusCode != 0 {
+		panic("ERROR IN SEND KEYS")
+	}
+}

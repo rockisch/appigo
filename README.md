@@ -11,6 +11,7 @@ Still, some are already working:
 * Closing the session
 * Finding an element (with all locator strategies)
 * Tapping on an element
+* Sending keys to an element
 * Setting a implicit wait
 
 ## Example
