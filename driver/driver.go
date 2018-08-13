@@ -6,14 +6,19 @@ import (
 	"github.com/rockisch/appigo/jsonutils"
 
 	"github.com/rockisch/appigo/client"
-	"github.com/rockisch/appigo/requester"
 )
 
 // Driver object containing some data related to your session
 type Driver struct {
 	driverClient       *client.Client
 	driverCapabilities map[string]string
-	SessionID          string
+	sessionID          string
+}
+
+type appiumRequest struct {
+	Method  string
+	BodyMap map[string]string
+	Path    string
 }
 
 // CreateDriver takes the create a Driver with the specified URL and and a map of
@@ -28,15 +33,29 @@ func CreateDriver(url string, capabilities map[string]string) *Driver {
 	return newDriver
 }
 
+func doAppiumRequest(appiumReq *appiumRequest, c *client.Client, name string) *client.Response {
+	resp, err := c.MakeRequest(
+		appiumReq.Method,
+		jsonutils.StringMapToJSON(appiumReq.BodyMap, name),
+		appiumReq.Path,
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return &resp
+}
+
 // Init tries to start a appium session with the url and capabilities stored in the driver.
 func (d *Driver) Init() {
-	appiumReq := &requester.AppiumRequest{
+	appiumReq := &appiumRequest{
 		"POST",
 		d.driverCapabilities,
 		"/wd/hub/session",
 	}
 
-	resp := requester.DoAppiumRequest(appiumReq, d.driverClient, "desiredCapabilities")
+	resp := doAppiumRequest(appiumReq, d.driverClient, "desiredCapabilities")
 
 	statusCodeErrorHandler(
 		resp.StatusCode, 500,
@@ -45,7 +64,7 @@ func (d *Driver) Init() {
 
 	mapBody := jsonutils.JSONToMap(resp.Body)
 
-	err := json.Unmarshal(*mapBody["sessionId"], &d.SessionID)
+	err := json.Unmarshal(*mapBody["sessionId"], &d.sessionID)
 	if err != nil {
 		panic(err)
 	}
@@ -54,13 +73,13 @@ func (d *Driver) Init() {
 // Close closes the session stored in the driver. It's always good practice to defer "driver.Close()"
 // as soon as you cal "driver.Init()"
 func (d *Driver) Close() {
-	appiumReq := &requester.AppiumRequest{
+	appiumReq := &appiumRequest{
 		"DELETE",
 		nil,
-		"/wd/hub/session/" + d.SessionID,
+		"/wd/hub/session/" + d.sessionID,
 	}
 
-	resp := requester.DoAppiumRequest(appiumReq, d.driverClient, "")
+	resp := doAppiumRequest(appiumReq, d.driverClient, "")
 
 	statusCodeErrorHandler(
 		resp.StatusCode, 500,

@@ -18,5 +18,6 @@ func main() {
 	driver.Init()
 	defer driver.Close()
 
-	println(driver.FindElement("show alert", mobileby.ByName).ID)
+	okButton := driver.FindElement("Ok", mobileby.ById)
+	okButton.Click()
 }

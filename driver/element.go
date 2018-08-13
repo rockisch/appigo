@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/rockisch/appigo/jsonutils"
-	"github.com/rockisch/appigo/requester"
 )
 
 type Element struct {
@@ -18,13 +17,13 @@ func (d *Driver) FindElement(elName string, elBy string) *Element {
 		"value": elName,
 	}
 
-	appiumReq := &requester.AppiumRequest{
+	appiumReq := &appiumRequest{
 		"POST",
 		reqBody,
-		"/wd/hub/session/" + d.SessionID + "/element",
+		"/wd/hub/session/" + d.sessionID + "/element",
 	}
 
-	res := requester.DoAppiumRequest(appiumReq, d.driverClient, "")
+	res := doAppiumRequest(appiumReq, d.driverClient, "")
 
 	if res.StatusCode != 200 {
 		statusCodeErrorHandler(res.StatusCode, 404,
@@ -45,13 +44,13 @@ func (d *Driver) FindElement(elName string, elBy string) *Element {
 }
 
 func (el *Element) Click() {
-	appiumReq := &requester.AppiumRequest{
+	appiumReq := &appiumRequest{
 		"POST",
 		nil,
-		"/wd/hub/session" + el.Driver.SessionID + "element" + el.ID + "/click",
+		"/wd/hub/session" + el.Driver.sessionID + "element" + el.ID + "/click",
 	}
 
-	res := requester.DoAppiumRequest(appiumReq, el.Driver.driverClient, "")
+	res := doAppiumRequest(appiumReq, el.Driver.driverClient, "")
 
 	if res.StatusCode != 200 {
 		panic("ERROR IN ELEMENT CLICK")
