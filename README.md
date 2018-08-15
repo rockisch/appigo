@@ -1,5 +1,5 @@
 # appigo
-Appigo is a appium driver implementation done in go
+A library used to create automated tests for iOS and Android using Appium with golang
 
 ## What is working
 
